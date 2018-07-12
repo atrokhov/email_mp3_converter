@@ -13,7 +13,7 @@ def download(url, email):
     ydl_opts = {
         'format': 'bestaudio/best',
         'audio-format': 'mp3',
-        'outtmpl': 'media/%(title)s.%(ext)s',
+        'outtmpl': 'media/%(id)s.%(ext)s',
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
@@ -29,7 +29,7 @@ def download(url, email):
     generated_mp3 = '{domain}{path}{filename}{format}'.format(
             domain='http://127.0.0.1:8000',
             path=settings.MEDIA_URL,
-            filename=video_info['title'],
+            filename=video_info['id'],
             format='.mp3'
         )
 
