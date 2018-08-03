@@ -38,12 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'downloader',
+    'celery',
     'django_celery_beat',
     'django_celery_results',
 ]
 
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_BROKER_URL = 'redis://broker:6379/'
+CELERY_RESULT_BACKEND = 'redis://broker:6379/'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -130,6 +131,7 @@ MEDIA_ROOT = os.getenv('MEDIA_ROOT', os.path.join(BASE_DIR, 'media'))
 MEDIA_URL = '/media/'
 
 # SMTP settings (DRAFT)
+EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 1025
@@ -148,41 +150,6 @@ CACHES = {
         }
     }
 }
-
-# Celery logger
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'formatters': {
-        'simple': {
-            'format': '%(levelname)s %(message)s',
-             'datefmt': '%y %b %d, %H:%M:%S',
-            },
-        },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple'
-        },
-        'celery': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'celery.log',
-            'formatter': 'simple',
-            'maxBytes': 1024 * 1024 * 100,  # 100 mb
-        },
-    },
-    'loggers': {
-        'celery': {
-            'handlers': ['celery', 'console'],
-            'level': 'DEBUG',
-        },
-    }
-}
-
-from logging.config import dictConfig
-dictConfig(LOGGING)
 
 # Session settings for Redis
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
